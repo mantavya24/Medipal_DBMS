@@ -27,3 +27,39 @@ Insert Into Patient Values('pat007','Meera Verma',86,'F',53.45,'O-');
 Insert Into Patient Values('pat008','Vihaan Gupta',32,'M',54.00,'O+');
 Insert Into Patient Values('pat010','Diya Reddy',11,'F',98.99,'B-');
 Insert Into Patient Values('pat011','Saanvi Joshi',34,'F',76.54,'AB+');
+
+
+INSERT INTO Active_Ingredients (chemical_id, chemical_name) VALUES
+('C001', 'Sildenafil'),           -- Found in Viagra
+('C002', 'Isosorbide Mononitrate'),-- Found in Monotrate (Heart medicine)
+('C003', 'Warfarin'),             -- Blood thinner
+('C004', 'Aspirin'),              -- Pain/Blood thinner
+('C005', 'Metformin'),            -- Diabetes
+('C006', 'Lisinopril'),           -- Blood pressure
+('C007', 'Atorvastatin'),         -- Cholesterol
+('C008', 'Amoxicillin'),          -- Antibiotic
+('C009', 'Alprazolam'),           -- Anxiety
+('C010', 'Omeprazole');           -- Antacid
+
+
+-- Mapping common brand names and assigning initial severity levels
+-- Logic: super_drug_id is used for brand/generic hierarchy as per your schema
+INSERT INTO Drugs (drug_id, drug_name, super_drug_id, severity) VALUES
+('DR001', 'Viagra', NULL, 'High'),
+('DR002', 'Monotrate', NULL, 'High'),
+('DR003', 'Coumadin', 'DR004', 'Moderate'), -- Warfarin brand
+('DR004', 'Warfarin-Generic', NULL, 'Moderate'),
+('DR005', 'Ecosprin', NULL, 'Low'),         -- Aspirin brand
+('DR006', 'Glucophage', NULL, 'Moderate'),   -- Metformin brand
+('DR007', 'Zestril', NULL, 'Moderate'),      -- Lisinopril brand
+('DR008', 'Lipitor', NULL, 'Low'),          -- Atorvastatin brand
+('DR009', 'Xanax', NULL, 'High'),           -- Alprazolam brand
+('DR010', 'Prilosec', NULL, 'Low');         -- Omeprazole brand
+
+-- MAPPING DRUGS TO INGREDIENTS (CONTAINS TABLE)
+INSERT INTO Contains (drug_id, chemical_id) VALUES
+('DR001', 'C001'), ('DR002', 'C002'), 
+('DR003', 'C003'), ('DR004', 'C003'),
+('DR005', 'C004'), ('DR006', 'C005'),
+('DR007', 'C006'), ('DR008', 'C007'),
+('DR009', 'C009'), ('DR010', 'C010');
