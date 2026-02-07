@@ -1,9 +1,6 @@
 USE Medipal;
 SHOW TABLES;
 
-ALTER TABLE Patient MODIFY COLUMN gender CHAR(1);
-ALTER TABLE Patient MODIFY COLUMN  weight NUMERIC(5,2);
-
 Insert Into DOCTOR Values('doc001','Ramesh Kumar',54,'Cardiologist');
 Insert Into DOCTOR Values('doc002','Sukrit Dang',44,'Neurologist');
 Insert Into DOCTOR Values('doc003','Avni Yadav',36,'Dermatologist');
