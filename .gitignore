@@ -1,0 +1,28 @@
+# --- Database Storage ---
+# This folder is created by Docker to store the actual data. 
+# Do NOT share this, as it is machine-specific and huge.
+db_data/
+
+# --- macOS Specific ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# --- IDE/Editor Specific ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Docker ---
+# We keep the .yml file, but ignore temporary logs
+.docker/
+*.log
+
+# --- Python (if you use it for data generation) ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
