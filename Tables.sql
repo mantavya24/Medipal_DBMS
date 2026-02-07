@@ -77,3 +77,7 @@ CREATE TABLE Feedback(
     comments TEXT,
     FOREIGN KEY (prescription_id) REFERENCES Prescription(prescription_id)
 );
+
+ALTER TABLE Patient MODIFY COLUMN gender CHAR(1);
+ALTER TABLE Patient MODIFY COLUMN  weight NUMERIC(5,2);
+
