@@ -1,0 +1,109 @@
+CREATE DATABASE Medipal;
+USE Medipal;
+
+CREATE TABLE Doctor(
+    doctor_id VARCHAR(20) PRIMARY KEY NOT NULL,
+    name VARCHAR(100),
+    age INT,
+    specialisation VARCHAR(100)
+);
+
+CREATE TABLE Patient(
+    patient_id VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(100),
+    age INT,
+    gender CHAR(1),
+    weight NUMERIC(3,2),
+    blood_group VARCHAR(5)
+);
+
+CREATE TABLE Active_Ingredients (
+    chemical_id VARCHAR(20) PRIMARY KEY,
+    chemical_name VARCHAR(100) 
+);
+
+CREATE TABLE Manufacturer(
+    manufacturer_id VARCHAR(20) PRIMARY KEY,
+    street_name VARCHAR(100),
+    building_name VARCHAR(100),
+    house_no VARCHAR(20)
+);
+
+CREATE TABLE Drugs(
+    drug_id VARCHAR(20) PRIMARY KEY,
+    drug_name VARCHAR(100),
+    super_drug_id VARCHAR(20),
+    severity VARCHAR(50),
+    FOREIGN KEY (super_drug_id) REFERENCES Drugs(drug_id)
+);
+
+CREATE TABLE Prescription(
+    prescription_id VARCHAR(20) PRIMARY KEY,
+    start_date DATE,
+    doctor_id VARCHAR(20),
+    patient_id VARCHAR(20),
+    FOREIGN KEY (doctor_id) REFERENCES Doctor(doctor_id),
+    FOREIGN KEY (patient_id) REFERENCES Patient(patient_id)
+);
+
+CREATE TABLE Contains(
+    drug_id VARCHAR(20),
+    chemical_id VARCHAR(20),
+    PRIMARY KEY (drug_id, chemical_id),
+    FOREIGN KEY (drug_id) REFERENCES Drugs(drug_id),
+    FOREIGN KEY (chemical_id) REFERENCES Active_Ingredients(chemical_id)
+);
+
+CREATE TABLE Manufactures(
+    manufacturer_id VARCHAR(20),
+    drug_id VARCHAR(20),
+    dosage VARCHAR(10),
+    PRIMARY KEY (manufacturer_id, drug_id),
+    FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer(manufacturer_id),
+    FOREIGN KEY (drug_id) REFERENCES Drugs(drug_id)
+);
+
+CREATE TABLE Has(
+    drug_id VARCHAR(20),
+    prescription_id VARCHAR(20),
+    PRIMARY KEY (drug_id, prescription_id),
+    FOREIGN KEY (drug_id) REFERENCES Drugs(drug_id),
+    FOREIGN KEY (prescription_id) REFERENCES Prescription(prescription_id)
+);
+
+CREATE TABLE Feedback(
+    feedback_no INT PRIMARY KEY,
+    prescription_id VARCHAR(20),
+    comments TEXT,
+    FOREIGN KEY (prescription_id) REFERENCES Prescription(prescription_id)
+);
+
+USE Medipal;
+SHOW TABLES;
+
+ALTER TABLE Patient MODIFY COLUMN gender CHAR(1);
+ALTER TABLE Patient MODIFY COLUMN  weight NUMERIC(5,2);
+
+Insert Into DOCTOR Values('doc001','Ramesh Kumar',54,'Cardiologist');
+Insert Into DOCTOR Values('doc002','Sukrit Dang',44,'Neurologist');
+Insert Into DOCTOR Values('doc003','Avni Yadav',36,'Dermatologist');
+Insert Into DOCTOR Values('doc004','Aryav Jain',42,'Pediatrician');
+Insert Into DOCTOR Values('doc005','Mantavya Arun Kumar',32,'Cardiologist');
+Insert Into DOCTOR Values('doc006','Arnav Ranjan',43,'Oncologist');
+Insert Into DOCTOR Values('doc007','Bhavya Joshi',45,'Oncologist');
+Insert Into DOCTOR Values('doc008','Soumya Singh',75,'Gastroenterologist');
+Insert Into DOCTOR Values('doc010','Eshaan Garg',64,'Endocrinologist');
+Insert Into DOCTOR Values('doc011','Vihaan Sharma',44,'Endocrinologist');
+
+
+
+Insert Into Patient Values('pat001','Aarav Sharma',24,'M',88.32,'O+');
+Insert Into Patient Values('pat002','Ananya Iyer',14,'F',54.43,'B+');
+Insert Into Patient Values('pat003','Ishaan Malhotra',18,'M',54.32,'AB-');
+Insert Into Patient Values('pat004','Arjun Nair',21,'M',32.54,'A-');
+Insert Into Patient Values('pat005','Kyra Kapoor',26,'F',87.65,'B-');
+Insert Into Patient Values('pat006','Rohan Das',37,'M',65.54,'AB');
+Insert Into Patient Values('pat007','Meera Verma',86,'F',53.45,'O-');
+Insert Into Patient Values('pat008','Vihaan Gupta',32,'M',54.00,'O+');
+Insert Into Patient Values('pat010','Diya Reddy',11,'F',98.99,'B-');
+Insert Into Patient Values('pat011','Saanvi Joshi',34,'F',76.54,'AB+');
