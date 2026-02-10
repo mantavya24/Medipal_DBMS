@@ -2,17 +2,23 @@ CREATE DATABASE Medipal;
 USE Medipal;
 
 CREATE TABLE Doctor(
-    doctor_id VARCHAR(20) PRIMARY KEY,
+    doctor_id VARCHAR(20) PRIMARY KEY NOT NULL,
     name VARCHAR(100),
     age INT,
     specialisation VARCHAR(100)
+);
+CREATE TABLE Doc_Phone_no(
+    doctor_id VARCHAR(20) NOT NULL,
+    phone_no CHAR(10),
+    PRIMARY KEY(doctor_id,phone_no),
+    FOREIGN KEY (doctor_id) REFERENCES Doctor(doctor_id)
 );
 
 CREATE TABLE Patient(
     patient_id VARCHAR(20) PRIMARY KEY,
     name VARCHAR(100),
     age INT,
-    gender VARCHAR(10),
+    gender CHAR(1),
     weight NUMERIC(3,2),
     blood_group VARCHAR(5)
 );
@@ -27,6 +33,13 @@ CREATE TABLE Manufacturer(
     street_name VARCHAR(100),
     building_name VARCHAR(100),
     house_no VARCHAR(20)
+);
+
+CREATE TABLE Manufacturer_Phone_no(
+    manufacturer_id VARCHAR(20) NOT NULL,
+    phone_no CHAR(10),
+    PRIMARY KEY(manufacturer_id,phone_no),
+    FOREIGN KEY(manufacturer_id) REFERENCES Manufacturer(manufacturer_id)
 );
 
 CREATE TABLE Drugs(
@@ -77,6 +90,7 @@ CREATE TABLE Feedback(
     comments TEXT,
     FOREIGN KEY (prescription_id) REFERENCES Prescription(prescription_id)
 );
+
 
 ALTER TABLE Patient MODIFY COLUMN gender CHAR(1);
 ALTER TABLE Patient MODIFY COLUMN  weight NUMERIC(5,2);
