@@ -1,0 +1,1359 @@
+CREATE DATABASE Medipal;
+USE Medipal;
+
+CREATE TABLE Doctor(
+    doctor_id VARCHAR(20) PRIMARY KEY NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    specialisation VARCHAR(100)
+);
+
+CREATE TABLE Doc_Phone_no(
+    doctor_id VARCHAR(20) NOT NULL,
+    phone_no CHAR(10),
+    PRIMARY KEY(doctor_id,phone_no),
+    FOREIGN KEY (doctor_id) REFERENCES Doctor(doctor_id)
+);
+
+CREATE TABLE Patient(
+    patient_id VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(100),
+    age INT,
+    gender CHAR(1),
+    weight NUMERIC(3,2),
+    blood_group VARCHAR(5)
+);
+alter table Patient
+add constraint gender check(gender in ('M','F'));
+CREATE TABLE Active_Ingredients (
+    chemical_id VARCHAR(20) PRIMARY KEY,
+    chemical_name VARCHAR(100) 
+);
+
+CREATE TABLE Manufacturer(
+    manufacturer_id VARCHAR(20) PRIMARY KEY,
+    street_name VARCHAR(100),
+    building_name VARCHAR(100),
+    house_no VARCHAR(20)
+);
+
+CREATE TABLE Manufacturer_Phone_no(
+    manufacturer_id VARCHAR(20) NOT NULL,
+    phone_no CHAR(10),
+    PRIMARY KEY(manufacturer_id,phone_no),
+    FOREIGN KEY(manufacturer_id) REFERENCES Manufacturer(manufacturer_id)
+);
+
+CREATE TABLE Drugs(
+    drug_id VARCHAR(20) PRIMARY KEY,
+    drug_name VARCHAR(100),
+    super_drug_id VARCHAR(20),
+    severity VARCHAR(50),
+    FOREIGN KEY (super_drug_id) REFERENCES Drugs(drug_id)
+);
+
+CREATE TABLE Prescription(
+    prescription_id VARCHAR(20) PRIMARY KEY,
+    start_date DATE,
+    doctor_id VARCHAR(20),
+    patient_id VARCHAR(20),
+    FOREIGN KEY (doctor_id) REFERENCES Doctor(doctor_id),
+    FOREIGN KEY (patient_id) REFERENCES Patient(patient_id)
+);
+
+CREATE TABLE Contains(
+    drug_id VARCHAR(20),
+    chemical_id VARCHAR(20),
+    PRIMARY KEY (drug_id, chemical_id),
+    FOREIGN KEY (drug_id) REFERENCES Drugs(drug_id),
+    FOREIGN KEY (chemical_id) REFERENCES Active_Ingredients(chemical_id)
+);
+
+CREATE TABLE Manufactures(
+    manufacturer_id VARCHAR(20),
+    drug_id VARCHAR(20),
+    dosage VARCHAR(10),
+    PRIMARY KEY (manufacturer_id, drug_id),
+    FOREIGN KEY (manufacturer_id) REFERENCES Manufacturer(manufacturer_id),
+    FOREIGN KEY (drug_id) REFERENCES Drugs(drug_id)
+);
+
+CREATE TABLE Has(
+    drug_id VARCHAR(20),
+    prescription_id VARCHAR(20),
+    PRIMARY KEY (drug_id, prescription_id),
+    FOREIGN KEY (drug_id) REFERENCES Drugs(drug_id),
+    FOREIGN KEY (prescription_id) REFERENCES Prescription(prescription_id)
+);
+
+CREATE TABLE Feedback(
+    feedback_no INT PRIMARY KEY,
+    prescription_id VARCHAR(20),
+    comments TEXT,
+    FOREIGN KEY (prescription_id) REFERENCES Prescription(prescription_id)
+);
+
+USE Medipal;
+SHOW TABLES;
+
+ALTER TABLE Patient MODIFY COLUMN gender CHAR(1);
+ALTER TABLE Patient MODIFY COLUMN  weight NUMERIC(5,2);
+ALTER TABLE Feedback MODIFY COLUMN  feedback_no VARCHAR(20);
+
+Insert Into DOCTOR Values('doc001','Ramesh Kumar',54,'Cardiologist');
+Insert Into DOCTOR Values('doc002','Sukrit Dang',44,'Neurologist');
+Insert Into DOCTOR Values('doc003','Avni Yadav',36,'Dermatologist');
+Insert Into DOCTOR Values('doc004','Aryav Jain',42,'Pediatrician');
+Insert Into DOCTOR Values('doc005','Mantavya Arun Kumar',32,'Cardiologist');
+Insert Into DOCTOR Values('doc006','Arnav Ranjan',43,'Oncologist');
+Insert Into DOCTOR Values('doc007','Bhavya Joshi',45,'Oncologist');
+Insert Into DOCTOR Values('doc008','Soumya Singh',75,'Gastroenterologist');
+Insert Into DOCTOR Values('doc009','Ishaan Dhull',74,'Pediatrician');
+Insert Into DOCTOR Values('doc010','Eshaan Garg',64,'Endocrinologist');
+Insert Into DOCTOR Values('doc011','Vihaan Sharma',44,'Endocrinologist');
+
+
+
+Insert Into Patient Values('pat001','Aarav Sharma',24,'M',88.32,'O+');
+Insert Into Patient Values('pat002','Ananya Iyer',14,'F',54.43,'B+');
+Insert Into Patient Values('pat003','Ishaan Malhotra',18,'M',54.32,'AB-');
+Insert Into Patient Values('pat004','Arjun Nair',21,'M',32.54,'A-');
+Insert Into Patient Values('pat005','Kyra Kapoor',26,'F',87.65,'B-');
+Insert Into Patient Values('pat006','Rohan Das',37,'M',65.54,'AB');
+Insert Into Patient Values('pat007','Meera Verma',86,'F',53.45,'O-');
+Insert Into Patient Values('pat008','Vihaan Gupta',32,'M',54.00,'O+');
+Insert Into Patient Values('pat010','Diya Reddy',11,'F',98.99,'B-');
+Insert Into Patient Values('pat011','Saanvi Joshi',34,'F',76.54,'AB+');
+
+
+INSERT INTO Manufacturer VALUES ('m001','Churchgate','Eros Build','42');
+INSERT INTO Manufacturer VALUES ('m002','Hazratganj', 'Lucknow Plaza','15/9');
+INSERT INTO Manufacturer VALUES ('m003','Bani Park', 'Jaipur Heritage', 'S-21');
+INSERT INTO Manufacturer VALUES ('m004','Salt Lake Sector V', 'Techno Park', 'Block-EP');
+INSERT INTO Manufacturer VALUES ('m005','Koramangala 80ft Rd', 'Indus View', '777');
+INSERT INTO Manufacturer Values ('m006','Connaught Place', 'Statesman House', 'B-14');
+INSERT INTO Manufacturer VALUES ('m007','Hitech City', 'Cyber Gateway', 'Phase-II');
+INSERT INTO Manufacturer VALUES ('m008','FC Road', 'Deccan Heights', '1092');
+INSERT INTO Manufacturer VALUES ('m009','T-Nagar', 'Chennai Hub', '88-C');
+INSERT INTO Manufacturer VALUES ('m010','Race Course Rd', 'Royal Enclave','10');
+USE Medipal;
+INSERT INTO Manufacturer (manufacturer_id, street_name, building_name, house_no) VALUES 
+('m011','Park Street','Apeejay House','15'),
+('m012','Indiranagar100ft','Metro Tower','402'),
+('m013','Gomti Nagar','Summit Plaza','C-12'),
+('m014','Bandra Kurla Complex', 'Trade Centre','G-Block'),
+('m015','MG Road','Cauvery Bhavan','Floor 5'),
+('m016','Sector 17','Chandigarh Hub','Sco-24'),
+('m017','Viman Nagar','Phoenix Market City','W-10'),
+('m018','Jubilee Hills','Road No 36 Plaza','7/B'),
+('m019','Marine Drive','Sea Face View','99'),
+('m020','Salt Lake Sector','Kolkata IT Park','Module 4');
+
+INSERT INTO Prescription VALUES ('pre001', '2026-01-10', 'doc001', 'pat001');
+INSERT INTO Prescription VALUES ('pre002', '2026-01-12', 'doc002', 'pat002');
+INSERT INTO Prescription VALUES ('pre003', '2026-01-15', 'doc003', 'pat003');
+INSERT INTO Prescription VALUES ('pre004', '2026-01-18', 'doc004', 'pat004');
+INSERT INTO Prescription VALUES ('pre005', '2026-01-20', 'doc005', 'pat005');
+INSERT INTO Prescription VALUES ('pre006', '2026-01-22', 'doc006', 'pat006');
+INSERT INTO Prescription VALUES ('pre007', '2026-01-25', 'doc007', 'pat007');
+INSERT INTO Prescription VALUES ('pre008', '2026-01-28', 'doc008', 'pat008');
+INSERT INTO Prescription VALUES ('pre009', '2026-02-01', 'doc009', 'pat010');
+INSERT INTO Prescription VALUES ('pre010', '2026-02-05', 'doc010', 'pat011');
+INSERT INTO Prescription VALUES ('pre011', '2026-02-23', 'doc005', 'pat005');
+INSERT INTO Prescription VALUES ('pre012', '2026-04-12', 'doc008', 'pat008');
+INSERT INTO Prescription VALUES ('pre013', '2026-05-01', 'doc002', 'pat002');
+INSERT INTO Prescription VALUES ('pre014', '2026-06-13', 'doc004', 'pat004');
+INSERT INTO Prescription VALUES ('pre015', '2026-06-21', 'doc007', 'pat007');
+INSERT INTO Prescription VALUES ('pre016', '2026-06-23', 'doc006', 'pat006');
+INSERT INTO Prescription VALUES ('pre017', '2026-04-12', 'doc003', 'pat003');
+INSERT INTO Prescription VALUES ('pre018', '2026-03-11', 'doc002', 'pat002');
+INSERT INTO Prescription VALUES ('pre019', '2026-02-09', 'doc001', 'pat001');
+INSERT INTO Prescription VALUES ('pre020', '2026-01-07', 'doc009', 'pat010');
+
+
+INSERT INTO Feedback (feedback_no, prescription_id, comments) VALUES 
+('f001', 'pre001', 'Patient reported significant improvement in chest pain.'),
+('f002', 'pre002', 'Headaches have reduced, but patient feels slightly drowsy.'),
+('f003', 'pre003', 'Skin rash has cleared up completely after one week.'),
+('f004', 'pre004', 'Patient is responding well to the pediatric dosage.'),
+('f005', 'pre005', 'Joint pain is still present; may need to review dosage.'),
+('f006', 'pre006', 'Patient feels much more stable emotionally.'),
+('f007', 'pre007', 'Nausea reported after taking the morning dose.'),
+('f008', 'pre008', 'Digestion has improved significantly.'),
+('f009', 'pre009', 'Hormone levels are stabilizing as per latest tests.'),
+('f010', 'pre010', 'Vision clarity has improved; no irritation noted.'),
+('f011', 'pre011', 'Follow-up: Recovery is on track, patient back to light exercise.'),
+('f012', 'pre012', 'Patient requested a refill; symptoms under control.'),
+('f013', 'pre013', 'Occasional dizziness noted in the evenings.'),
+('f014', 'pre014', 'Child is much more active and fever has not returned.'),
+('f015', 'pre015', 'Treatment completed; patient is now asymptomatic.');
+
+USE Medipal;
+
+INSERT INTO Drugs(drug_id, drug_name, super_drug_id, severity)VALUES 
+('dr001','Aspirin',NULL,NULL),
+('dr002','Warfarin','dr001','High'),
+('dr003', 'Metformin', NULL,NULL),
+('dr004','Lisinopril', NULL, 'Medium'),
+('dr005','Potassium Chloride','dr004','High'),
+('dr006','Amoxicillin', NULL,NULL),
+('dr007','Methotrexate','dr001','High'),
+('dr008', 'Atorvastatin', NULL,NULL),
+('dr009','Clarithromycin','dr008','High'),
+('dr010','Albuterol', NULL,NULL),
+('dr011','Propranolol', 'dr010', 'Medium'),
+('dr012','Omeprazole',NULL,NULL),
+('dr013','Clopidogrel', 'dr012', 'Medium'),
+('dr014','Levothyroxine', NULL,NULL),
+('dr015','Calcium Carbonate', 'dr014', 'Low'),
+('dr016','Sertraline', NULL,NULL),
+('dr017','Tramadol', 'dr016', 'High'),
+('dr018','Amlodipine', NULL,NULL),
+('dr019','Simvastatin', 'dr009', 'High'),
+('dr020','Ibuprofen', 'dr001', 'Medium');
+
+
+
+
+INSERT INTO Active_Ingredients (chemical_id, chemical_name) VALUES 
+('ch001','Acetylsalicylic Acid'),
+('ch002','Warfarin Sodium'),
+('ch003','Metformin Hydrochloride'),
+('ch004','Lisinopril Dihydrate'),
+('ch005','Potassium Chloride'),
+('ch006','Amoxicillin Trihydrate'),
+('ch007','Methotrexate Sodium'),
+('ch008','Atorvastatin Calcium'),
+('ch009','Clarithromycin'),
+('ch010','Albuterol Sulfate'),
+('ch011','Propranolol Hydrochloride'),
+('ch012','Omeprazole Magnesium'),
+('ch013','Clopidogrel Bisulfate'),
+('ch014','Levothyroxine Sodium'),
+('ch015','Calcium Carbonate'),
+('ch016','Sertraline Hydrochloride'),
+('ch017','Tramadol Hydrochloride'),
+('ch018','Amlodipine Besylate'),
+('ch019','Simvastatin'),
+('ch020','Ibuprofen');
+
+USE Medipal;
+
+INSERT INTO Contains (drug_id, chemical_id) VALUES 
+('dr001', 'ch001'),
+('dr002', 'ch002'),
+('dr003', 'ch003'),
+('dr004', 'ch004'),
+('dr005', 'ch005'),
+('dr006', 'ch006'),
+('dr007', 'ch007'),
+('dr008', 'ch008'),
+('dr009', 'ch009'),
+('dr010', 'ch010'),
+('dr011', 'ch011'),
+('dr012', 'ch012'),
+('dr013', 'ch013'),
+('dr014', 'ch014'),
+('dr015', 'ch015'),
+('dr017', 'ch017'),
+('dr018', 'ch018'),
+('dr019', 'ch019'),
+('dr020', 'ch020');
+Insert into Contains values('dr016', 'ch016');
+
+
+USE Medipal;
+INSERT INTO Manufactures (manufacturer_id,drug_id,dosage) VALUES 
+('m001','dr001','100mg'),
+('m002','dr002','50mg'),
+('m003','dr003','100mg'),
+('m004','dr004','50mg'),
+('m005','dr005','100mg'),
+('m006','dr006','50mg'),
+('m007','dr007','100mg'),
+('m008','dr008','50mg'),
+('m009','dr009','100mg'),
+('m010','dr010','50mg'),
+('m011','dr011','100mg'),
+('m012','dr012','50mg'),
+('m013','dr013','100mg'),
+('m014','dr014','50mg'),
+('m015','dr015','50mg'),
+('m016','dr016','100mg'),
+('m017','dr017','50mg'),
+('m018','dr018','100mg'),
+('m019','dr019','50mg'),
+('m020','dr020','100mg');
+
+USE Medipal;
+INSERT INTO Has(drug_id,prescription_id) VALUES 
+('dr001','pre001'),
+('dr002','pre002'),
+('dr003','pre003'),
+('dr004','pre004'),
+('dr005','pre005'),
+('dr006','pre007'),
+('dr007','pre008'),
+('dr008','pre009'),
+('dr009','pre010'),
+('dr010','pre011'),
+('dr011','pre012'),
+('dr012','pre013'),
+('dr013','pre014'),
+('dr014','pre015'),
+('dr015','pre016'),
+('dr017','pre017'),
+('dr018','pre018'),
+('dr019','pre019'),
+('dr020','pre020');
+
+
+INSERT INTO Has(drug_id,prescription_id) VALUES 
+('dr001','pre001'),
+('dr002','pre002'),
+('dr003','pre003'),
+('dr004','pre004'),
+('dr005','pre005'),
+('dr006','pre007'),
+('dr007','pre008'),
+('dr008','pre009'),
+('dr009','pre010'),
+('dr010','pre011'),
+('dr011','pre012'),
+('dr012','pre013'),
+('dr013','pre014'),
+('dr014','pre015'),
+('dr015','pre016'),
+('dr017','pre017'),
+('dr018','pre018'),
+('dr019','pre019'),
+('dr020','pre020');
+
+USE Medipal;
+INSERT INTO Doc_Phone_no(doctor_id,phone_no) VALUES 
+('doc001','9811771298'),
+('doc001','9876543210'),
+('doc002','9123456789'),
+('doc003','8826110022'),
+('doc004','7733044556'),
+('doc005','9988776655'),
+('doc005','8123498765'),
+('doc006','7012345678'),
+('doc007','6309876543'),
+('doc008','9500123456'),
+('doc009','8245611223'),
+('doc010','9444012345'),
+('doc011','8012344556');
+
+
+INSERT INTO Manufacturer_Phone_no(manufacturer_id,phone_no) VALUES 
+('m001','9811771298'),
+('m001','9876543210'),
+('m002','9123456789'),
+('m003','8826110022'),
+('m004','7733044556'),
+('m005','9988776655'),
+('m005','8123498765'),
+('m006','7012345678'),
+('m007','6309876543'),
+('m008','9500123456'),
+('m009','8245611223'),
+('m010','9444012345'),
+('m011','8012344556'),
+('m012','9123400987'),
+('m013','8223344556'),
+('m014','7665544332'),
+('m015','9810022334'),
+('m016','6390122334'),
+('m017','8877665544'),
+('m018','7443322110'),
+('m019','9550011223'),
+('m020','8009988776');
+
+
+CREATE INDEX idx_patient_name ON Patient(name);
+CREATE INDEX idx_drug_name ON Drugs(drug_name);
+CREATE INDEX idx_drugs_severity ON Drugs(severity);
+
+insert into Doctor Values('doc012','Deepanshi Ruhil',43,'pediatrician');
+update Doctor
+set name='Eshaan Dhull'
+where doctor_id='doc009';
+
+select drug_name
+from Drugs
+where drug_id='dr009';
+
+INSERT INTO DOCTOR (doctor_id, name, age, specialisation) VALUES
+('doc013', 'Rohan Mehra', 41, 'Neurologist'),
+('doc014', 'Sanya Malhotra', 29, 'Pediatrician'),
+('doc015', 'Kabir Thapar', 55, 'Cardiologist'),
+('doc016', 'Ishita Bhalla', 47, 'Oncologist'),
+('doc017', 'Arjun Reddy', 34, 'Gastroenterologist'),
+('doc018', 'Meera Kapoor', 62, 'Endocrinologist'),
+('doc019', 'Aditya Verma', 39, 'Orthopedic'),
+('doc020', 'Zoya Khan', 43, 'Psychiatrist'),
+('doc021', 'Vikram Seth', 58, 'Cardiologist'),
+('doc022', 'Priya Mani', 31, 'Dermatologist'),
+('doc023', 'Siddharth Roy', 50, 'Neurologist'),
+('doc024', 'Kiara Advani', 33, 'Pediatrician'),
+('doc025', 'Varun Dhawan', 46, 'Oncologist'),
+('doc026', 'Tara Sutaria', 28, 'General Physician'),
+('doc027', 'Ranbir Sodhi', 52, 'Gastroenterologist'),
+('doc028', 'Alia Bhatt', 35, 'Endocrinologist'),
+('doc029', 'Kartik Aaryan', 37, 'Orthopedic'),
+('doc030', 'Sara Ali Khan', 30, 'Psychiatrist'),
+('doc031', 'Ayushmann Khurrana', 44, 'Cardiologist'),
+('doc032', 'Taapsee Pannu', 36, 'Dermatologist'),
+('doc033', 'Vicky Kaushal', 40, 'Neurologist'),
+('doc034', 'Janhvi Kapoor', 27, 'Pediatrician'),
+('doc035', 'Pankaj Tripathi', 54, 'Oncologist'),
+('doc036', 'Nawazuddin Siddiqui', 49, 'General Physician'),
+('doc037', 'Radhika Apte', 42, 'Gastroenterologist'),
+('doc038', 'Rajkummar Rao', 41, 'Endocrinologist'),
+('doc039', 'Bhumi Pednekar', 38, 'Orthopedic'),
+('doc040', 'Vijay Varma', 45, 'Psychiatrist'),
+('doc041', 'Sobhita Dhulipala', 32, 'Cardiologist'),
+('doc042', 'Jim Sarbh', 43, 'Dermatologist'),
+('doc043', 'Kalki Koechlin', 46, 'Neurologist'),
+('doc044', 'Dulquer Salmaan', 39, 'Pediatrician'),
+('doc045', 'Fahadh Faasil', 47, 'Oncologist'),
+('doc046', 'Sai Pallavi', 31, 'General Physician'),
+('doc047', 'Prithviraj Sukumaran', 44, 'Gastroenterologist'),
+('doc048', 'Rashmika Mandanna', 29, 'Endocrinologist'),
+('doc049', 'Samantha Prabhu', 37, 'Orthopedic'),
+('doc050', 'Yash Gowda', 41, 'Psychiatrist'),
+('doc051', 'Ram Charan', 43, 'Cardiologist'),
+('doc052', 'NTR Rama Rao', 42, 'Dermatologist'),
+('doc053', 'Mahesh Babu', 48, 'Neurologist'),
+('doc054', 'Allu Arjun', 41, 'Pediatrician'),
+('doc055', 'Nayanthara Kurian', 39, 'Oncologist'),
+('doc056', 'Trisha Krishnan', 40, 'General Physician'),
+('doc057', 'Surya Sivakumar', 49, 'Gastroenterologist'),
+('doc058', 'Jyothika Sadanah', 46, 'Endocrinologist'),
+('doc059', 'Dhanush Kasali', 40, 'Orthopedic'),
+('doc060', 'Vijay Joseph', 51, 'Psychiatrist'),
+('doc061', 'Keerthy Suresh', 32, 'Cardiologist');
+
+INSERT INTO Doc_Phone_no (doctor_id, phone_no) VALUES
+('doc012', '9871122334'),
+('doc013', '9810022334'),
+('doc014', '7766554433'),
+('doc015', '9911228833'),
+('doc015', '9911228844'), 
+('doc016', '8877665544'),
+('doc017', '9122334455'),
+('doc018', '7044332211'),
+('doc019', '8122339900'),
+('doc020', '9555667788'),
+('doc021', '9844556677'),
+('doc022', '7666554433'),
+('doc023', '8111223344'),
+('doc024', '9222334455'),
+('doc025', '9333445566'),
+('doc026', '9444556677'),
+('doc027', '9555667788'),
+('doc028', '9666778899'),
+('doc029', '9777889900'),
+('doc030', '9888990011'),
+('doc031', '9999001122'),
+('doc032', '9000112233'),
+('doc033', '9111223344'),
+('doc034', '9222334455'),
+('doc035', '9333445566'),
+('doc036', '9444556677'),
+('doc037', '9555667788'),
+('doc038', '9666778899'),
+('doc039', '9777889900'),
+('doc040', '9888990011'),
+('doc041', '9999001122'),
+('doc041', '8888001122'), 
+('doc042', '9011223344'),
+('doc043', '9122334455'),
+('doc044', '9233445566'),
+('doc045', '9344556677'),
+('doc046', '9455667788'),
+('doc047', '9566778899'),
+('doc048', '9677889900'),
+('doc049', '9788990011'),
+('doc050', '9899001122'),
+('doc051', '9900112233'),
+('doc052', '9012233445'),
+('doc053', '9123344556'),
+('doc054', '9234455667'),
+('doc055', '9345566778'),
+('doc056', '9456677889'),
+('doc057', '9567788990'),
+('doc058', '9678899001'),
+('doc059', '9789900112'),
+('doc060', '9890011223'),
+('doc061', '9901122334');
+
+INSERT INTO Patient (patient_id, name, age, gender, weight, blood_group) VALUES
+('pat012', 'Kabir Singh', 29, 'M', 75.40, 'A+'),
+('pat013', 'Zoya Akhtar', 31, 'F', 62.15, 'O+'),
+('pat014', 'Aditya Roy', 45, 'M', 82.30, 'B+'),
+('pat015', 'Kiara Khanna', 22, 'F', 58.90, 'O-'),
+('pat016', 'Ranveer Brar', 38, 'M', 79.10, 'AB+'),
+('pat017', 'Sara Khan', 25, 'F', 54.20, 'A-'),
+('pat018', 'Aryan Khan', 19, 'M', 68.50, 'B-'),
+('pat019', 'Janhvi Shah', 27, 'F', 52.33, 'O+'),
+('pat020', 'Ishaan Khattar', 24, 'M', 71.00, 'AB-'),
+('pat021', 'Anushka Sen', 21, 'F', 49.80, 'B+'),
+('pat022', 'Varun Bajaj', 33, 'M', 85.25, 'O+'),
+('pat023', 'Tara Deshmukh', 30, 'F', 56.40, 'A+'),
+('pat024', 'Siddharth Nigam', 20, 'M', 66.70, 'B+'),
+('pat025', 'Avneet Kaur', 23, 'F', 51.10, 'O-'),
+('pat026', 'Rishabh Pant', 26, 'M', 80.00, 'A-'),
+('pat027', 'Kriti Sanon', 32, 'F', 59.50, 'AB+'),
+('pat028', 'Kartik Mittal', 35, 'M', 77.20, 'O+'),
+('pat029', 'Pooja Hegde', 29, 'F', 55.60, 'B-'),
+('pat030', 'Tiger Shroff', 31, 'M', 74.80, 'A+'),
+('pat031', 'Rashmika Rao', 28, 'F', 53.90, 'O+'),
+('pat032', 'Vicky Jain', 40, 'M', 88.10, 'AB-'),
+('pat033', 'Taapsee Pannu', 34, 'F', 61.20, 'B+'),
+('pat034', 'Ayushmann Dutt', 37, 'M', 76.50, 'O-'),
+('pat035', 'Bhumi Pednekar', 33, 'F', 64.00, 'A+'),
+('pat036', 'Rajkummar Rao', 39, 'M', 72.30, 'B+'),
+('pat037', 'Sanya Malhotra', 28, 'F', 50.45, 'O+'),
+('pat038', 'Vijay Varma', 42, 'M', 70.80, 'AB+'),
+('pat039', 'Sobhita D', 30, 'F', 57.30, 'A-'),
+('pat040', 'Jim Sarbh', 44, 'M', 73.00, 'O-'),
+('pat041', 'Kalki K', 36, 'F', 52.90, 'B-'),
+('pat042', 'Dulquer S', 38, 'M', 78.40, 'A+'),
+('pat043', 'Sai Pallavi', 29, 'F', 51.60, 'O+'),
+('pat044', 'Fahadh F', 41, 'M', 69.20, 'AB-'),
+('pat045', 'Samantha R', 34, 'F', 53.00, 'B+'),
+('pat046', 'Prithviraj S', 43, 'M', 84.50, 'O-'),
+('pat047', 'Nayanthara K', 37, 'F', 56.70, 'A+'),
+('pat048', 'Dhanush K', 40, 'M', 67.30, 'B-'),
+('pat049', 'Trisha K', 38, 'F', 54.10, 'O+'),
+('pat050', 'Yash G', 36, 'M', 82.00, 'AB+'),
+('pat051', 'Keerthy S', 31, 'F', 52.50, 'A-'),
+('pat052', 'Allu A', 39, 'M', 75.90, 'O-'),
+('pat053', 'Mahesh B', 46, 'M', 79.20, 'B+'),
+('pat054', 'Tamannaah B', 32, 'F', 55.40, 'A+'),
+('pat055', 'Ram Charan', 37, 'M', 81.30, 'O+'),
+('pat056', 'Shruti Haasan', 35, 'F', 58.20, 'AB-'),
+('pat057', 'NTR Jr', 38, 'M', 83.10, 'B-'),
+('pat058', 'Kajal Aggarwal', 36, 'F', 57.00, 'A-'),
+('pat059', 'Prabhas R', 44, 'M', 92.40, 'O+'),
+('pat060', 'Rakul Preet', 33, 'F', 54.80, 'AB+'),
+('pat061', 'Suriya S', 47, 'M', 76.90, 'B+');
+
+INSERT INTO Active_Ingredients (chemical_id, chemical_name) VALUES 
+('ch021', 'Paracetamol'),
+('ch022', 'Azithromycin Monohydrate'),
+('ch023', 'Metoprolol Succinate'),
+('ch024', 'Gabapentin'),
+('ch025', 'Losartan Potassium'),
+('ch026', 'Hydrochlorothiazide'),
+('ch027', 'Montelukast Sodium'),
+('ch028', 'Pantoprazole Sodium'),
+('ch029', 'Furosemide'),
+('ch030', 'Fluticasone Propionate'),
+('ch031', 'Rosuvastatin Calcium'),
+('ch032', 'Escitalopram Oxalate'),
+('ch033', 'Duloxetine Hydrochloride'),
+('ch034', 'Methylprednisolone'),
+('ch035', 'Venlafaxine Hydrochloride'),
+('ch036', 'Zolpidem Tartrate'),
+('ch037', 'Ranitidine Hydrochloride'),
+('ch038', 'Atenolol'),
+('ch039', 'Ciprofloxacin Hydrochloride'),
+('ch040', 'Glipizide'),
+('ch041', 'Spironolactone'),
+('ch042', 'Carvedilol'),
+('ch043', 'Tamsulosin Hydrochloride'),
+('ch044', 'Fluoxetine Hydrochloride'),
+('ch045', 'Digoxin'),
+('ch046', 'Bupropion Hydrochloride'),
+('ch047', 'Naproxen Sodium'),
+('ch048', 'Baclofen'),
+('ch049', 'Allopurinol'),
+('ch050', 'Warfarin'),
+('ch051', 'Prednisone'),
+('ch052', 'Cephalexin Monohydrate'),
+('ch053', 'Doxycycline Hyclate'),
+('ch054', 'Lansoprazole'),
+('ch055', 'Pioglitazone Hydrochloride'),
+('ch056', 'Sitagliptin Phosphate'),
+('ch057', 'Valsartan'),
+('ch058', 'Ezetimibe'),
+('ch059', 'Dicyclomine Hydrochloride'),
+('ch060', 'Lamotrigine'),
+('ch061', 'Quetiapine Fumarate'),
+('ch062', 'Donepezil Hydrochloride'),
+('ch063', 'Risperidone'),
+('ch064', 'Sumatriptan Succinate'),
+('ch065', 'Ondansetron Hydrochloride'),
+('ch066', 'Mupiracin Calcium'),
+('ch067', 'Nystatin'),
+('ch068', 'Oseltamivir Phosphate'),
+('ch069', 'Valacyclovir Hydrochloride'),
+('ch070', 'Acyclovir Sodium');
+
+
+
+INSERT INTO Manufacturer (manufacturer_id, street_name, building_name, house_no) VALUES 
+('m021', 'Nehru Place', 'Hemkunt Tower', '98'),
+('m022', 'Powai Hiranandani', 'Supreme Business Park', 'B-Wing'),
+('m023', 'Whitefield', 'ITPB Sigma', 'Level 2'),
+('m024', 'Anna Salai', 'Spencer Plaza', '769'),
+('m025', 'Gachibowli', 'DLF Cyber City', 'Block 3'),
+('m026', 'Cyber City Phase III', 'Epitome Building', '5-C'),
+('m027', 'Richmond Road', 'Prestige Towers', '12/1'),
+('m028', 'Worli Sea Link Rd', 'Birla Centurion', 'Floor 10'),
+('m029', 'Navrangpura', 'Amrut Arcade', 'S-4'),
+('m030', 'Bidhannagar', 'Godrej Waterside', 'Tower II'),
+('m031', 'Magarpatta City', 'Pentagon P-1', 'Suite 401'),
+('m032', 'Banjara Hills', 'Ashoka Capitol', 'Road No 2'),
+('m033', 'Kailash Colony', 'HSBC Plaza', 'M-11'),
+('m034', 'Andheri East', 'Solitaire Corporate Park', 'Bldg 5'),
+('m035', 'Lavelle Road', 'Skyavane Plaza', '10/A'),
+('m036', 'Guindy Industrial Estate', 'Olympia Tech Park', 'Phase I'),
+('m037', 'Madhapur', 'Inorbit Mall Rd', 'Flat 202'),
+('m038', 'Sohna Road', 'Spaze I-Tech Park', 'Tower B'),
+('m039', 'Cunningham Road', 'Prestige Nebula', 'Unit 3'),
+('m040', 'Lower Parel', 'Peninsula Corporate Park', 'Ground Floor'),
+('m041', 'Satellite Road', 'Titanium Heights', 'A-801'),
+('m042', 'Rajarhat', 'Ecospace Business Park', 'Block 4A'),
+('m043', 'Hinjewadi Phase II', 'Embassy Tech Zone', 'Bldg 1.1'),
+('m044', 'Begumpet', 'Mayfair Complex', '6-3-86'),
+('m045', 'Okhla Phase III', 'Modi Tower', 'Plot 14'),
+('m046', 'Vashi Sector 17', 'Akshar Blue Chip', 'IT-22'),
+('m047', 'Koramangala 4th Block', 'Forum Mall Office', '11'),
+('m048', 'Mount Road', 'Gove Building', '442'),
+('m049', 'Kukatpally', 'Manjeera Trinity', 'J-15'),
+('m050', 'Golf Course Road', 'One Horizon Center', 'Level 14'),
+('m051', 'Brigade Road', 'St. Patrick Complex', 'G-19'),
+('m052', 'Nariman Point', 'Maker Chambers VI', '612'),
+('m053', 'C.G. Road', 'Panchratna Bldg', 'B-2'),
+('m054', 'New Town Action Area 1', 'Terminus Building', 'Suite 5'),
+('m055', 'Aundh IT Park', 'Centriole Building', '409'),
+('m056', 'Somajiguda', 'Babukhan Estate', 'Floor 8'),
+('m057', 'Barakhamba Road', 'Gopal Das Bhawan', '28'),
+('m058', 'Malad Link Road', 'Interface 11', 'Unit 102'),
+('m059', 'Old Airport Road', 'Diamond District', 'P-7'),
+('m060', 'Ambattur IT Park', 'Prince Info Park', 'Tower A'),
+('m061', 'Financial District', 'WaveRock IT Park', 'Bldg 2'),
+('m062', 'Udyog Vihar Phase IV', 'Enkay Towers', 'Plot 20'),
+('m063', 'Commercial Street', 'Jewel Plaza', '215'),
+('m064', 'Fort Area', 'Standard Chartered Bldg', 'Floor 2'),
+('m065', 'Bodakdev', 'Suryavanshi Tower', '405-C'),
+('m066', 'Sector V Salt Lake', 'Srijan Tech Park', 'Module 102'),
+('m067', 'Baner Road', 'Pancard Club Rd', 'S-10'),
+('m068', 'Panjagutta', 'Nagarjuna Circle', 'Block B'),
+('m069', 'Janpath', 'Thapar House', '124'),
+('m070', 'Goregaon East', 'Nirlon Knowledge Park', 'Bldg 6');
+
+
+INSERT INTO Manufacturer_Phone_no (manufacturer_id, phone_no) VALUES 
+('m021', '9811002233'),
+('m022', '9876001122'),
+('m023', '9123004455'),
+('m024', '8826007788'),
+('m025', '7733001199'),
+('m026', '9988002233'),
+('m026', '9988002244'),
+('m027', '8123005566'),
+('m028', '7012003344'),
+('m029', '6309001122'),
+('m030', '9500003344'),
+('m031', '8245006677'),
+('m032', '9444008899'),
+('m033', '8012001122'),
+('m034', '9123006655'),
+('m035', '8223009988'),
+('m036', '7665001122'),
+('m037', '9810004455'),
+('m038', '6390007788'),
+('m039', '8877009900'),
+('m040', '7443002233'),
+('m041', '9550004455'),
+('m042', '8009006677'),
+('m043', '9871003322'),
+('m044', '9810113344'),
+('m045', '7766114433'),
+('m046', '9911118833'),
+('m047', '8877115544'),
+('m048', '9122114455'),
+('m049', '7044112211'),
+('m050', '8122119900'),
+('m050', '8122119901'),
+('m051', '9555117788'),
+('m052', '9844116677'),
+('m053', '7666114433'),
+('m054', '8111113344'),
+('m055', '9222114455'),
+('m056', '9333115566'),
+('m057', '9444116677'),
+('m058', '9555117788'),
+('m059', '9666118899'),
+('m060', '9777119900'),
+('m061', '9888110011'),
+('m062', '9999111122'),
+('m063', '9000112233'),
+('m064', '9111113344'),
+('m065', '9222114455'),
+('m066', '9333115566'),
+('m067', '9444116677'),
+('m068', '9555117788'),
+('m069', '9666118899'),
+('m070', '9777119900');
+
+
+INSERT INTO Drugs (drug_id, drug_name, super_drug_id, severity) VALUES 
+('dr021', 'Paracetamol', NULL, NULL),
+('dr022', 'Azithromycin', 'dr006', 'Medium'),
+('dr023', 'Metoprolol', 'dr011', 'High'),
+('dr024', 'Gabapentin', NULL, NULL),
+('dr025', 'Losartan', 'dr004', 'Medium'),
+('dr026', 'Hydrochlorothiazide', NULL, NULL),
+('dr027', 'Montelukast', 'dr010', 'Low'),
+('dr028', 'Pantoprazole', 'dr012', 'Low'),
+('dr029', 'Furosemide', 'dr026', 'High'),
+('dr030', 'Fluticasone', NULL, NULL),
+('dr031', 'Rosuvastatin', 'dr008', 'High'),
+('dr032', 'Escitalopram', 'dr016', 'Medium'),
+('dr033', 'Duloxetine', 'dr016', 'High'),
+('dr034', 'Methylprednisolone', NULL, NULL),
+('dr035', 'Venlafaxine', 'dr032', 'High'),
+('dr036', 'Zolpidem', NULL, 'Medium'),
+('dr037', 'Ranitidine', 'dr012', 'Low'),
+('dr038', 'Atenolol', 'dr011', 'Medium'),
+('dr039', 'Ciprofloxacin', 'dr006', 'High'),
+('dr040', 'Glipizide', 'dr003', 'Medium'),
+('dr041', 'Spironolactone', 'dr029', 'High'),
+('dr042', 'Carvedilol', 'dr023', 'Medium'),
+('dr043', 'Tamsulosin', NULL, NULL),
+('dr044', 'Fluoxetine', 'dr016', 'High'),
+('dr045', 'Digoxin', NULL, 'High'),
+('dr046', 'Bupropion', NULL, 'Medium'),
+('dr047', 'Naproxen', 'dr020', 'Medium'),
+('dr048', 'Baclofen', NULL, NULL),
+('dr049', 'Allopurinol', NULL, NULL),
+('dr050', 'Prednisone', 'dr034', 'Medium'),
+('dr051', 'Cephalexin', 'dr006', 'Medium'),
+('dr052', 'Doxycycline', 'dr039', 'High'),
+('dr053', 'Lansoprazole', 'dr028', 'Low'),
+('dr054', 'Pioglitazone', 'dr003', 'High'),
+('dr055', 'Sitagliptin', 'dr003', 'Medium'),
+('dr056', 'Valsartan', 'dr025', 'Medium'),
+('dr057', 'Ezetimibe', 'dr031', 'Low'),
+('dr058', 'Dicyclomine', NULL, NULL),
+('dr059', 'Lamotrigine', 'dr024', 'High'),
+('dr060', 'Quetiapine', NULL, 'High'),
+('dr061', 'Donepezil', NULL, 'Medium'),
+('dr062', 'Risperidone', 'dr060', 'High'),
+('dr063', 'Sumatriptan', NULL, 'Medium'),
+('dr064', 'Ondansetron', NULL, NULL),
+('dr065', 'Mupiracin', NULL, 'Low'),
+('dr066', 'Nystatin', NULL, NULL),
+('dr067', 'Oseltamivir', 'dr022', 'Medium'),
+('dr068', 'Valacyclovir', NULL, 'High'),
+('dr069', 'Acyclovir', 'dr068', 'Medium'),
+('dr070', 'Hydralazine', 'dr004', 'High');
+
+
+INSERT INTO Prescription (prescription_id, start_date, doctor_id, patient_id) VALUES 
+('pre021', '2026-02-15', 'doc012', 'pat012'),
+('pre022', '2026-02-18', 'doc013', 'pat013'),
+('pre023', '2026-02-20', 'doc014', 'pat014'),
+('pre024', '2026-02-25', 'doc015', 'pat015'),
+('pre025', '2026-03-01', 'doc016', 'pat016'),
+('pre026', '2026-03-05', 'doc017', 'pat017'),
+('pre027', '2026-03-10', 'doc018', 'pat018'),
+('pre028', '2026-03-12', 'doc019', 'pat019'),
+('pre029', '2026-03-15', 'doc020', 'pat020'),
+('pre030', '2026-03-20', 'doc021', 'pat021'),
+('pre031', '2026-03-22', 'doc022', 'pat022'),
+('pre032', '2026-03-25', 'doc023', 'pat023'),
+('pre033', '2026-04-01', 'doc024', 'pat024'),
+('pre034', '2026-04-05', 'doc025', 'pat025'),
+('pre035', '2026-04-08', 'doc026', 'pat026'),
+('pre036', '2026-04-10', 'doc027', 'pat027'),
+('pre037', '2026-04-15', 'doc028', 'pat028'),
+('pre038', '2026-04-18', 'doc029', 'pat029'),
+('pre039', '2026-04-20', 'doc030', 'pat030'),
+('pre040', '2026-04-25', 'doc031', 'pat031'),
+('pre041', '2026-05-01', 'doc032', 'pat032'),
+('pre042', '2026-05-05', 'doc033', 'pat033'),
+('pre043', '2026-05-10', 'doc034', 'pat034'),
+('pre044', '2026-05-15', 'doc035', 'pat035'),
+('pre045', '2026-05-20', 'doc036', 'pat036'),
+('pre046', '2026-05-25', 'doc037', 'pat037'),
+('pre047', '2026-06-01', 'doc038', 'pat038'),
+('pre048', '2026-06-05', 'doc039', 'pat039'),
+('pre049', '2026-06-10', 'doc040', 'pat040'),
+('pre050', '2026-06-15', 'doc041', 'pat041'),
+('pre051', '2026-06-20', 'doc042', 'pat042'),
+('pre052', '2026-06-25', 'doc043', 'pat043'),
+('pre053', '2026-07-01', 'doc044', 'pat044'),
+('pre054', '2026-07-05', 'doc045', 'pat045'),
+('pre055', '2026-07-10', 'doc046', 'pat046'),
+('pre056', '2026-07-15', 'doc047', 'pat047'),
+('pre057', '2026-07-20', 'doc048', 'pat048'),
+('pre058', '2026-07-25', 'doc049', 'pat049'),
+('pre059', '2026-08-01', 'doc050', 'pat050'),
+('pre060', '2026-08-05', 'doc051', 'pat051'),
+('pre061', '2026-08-10', 'doc052', 'pat052'),
+('pre062', '2026-08-15', 'doc053', 'pat053'),
+('pre063', '2026-08-20', 'doc054', 'pat054'),
+('pre064', '2026-08-25', 'doc055', 'pat055'),
+('pre065', '2026-09-01', 'doc056', 'pat056'),
+('pre066', '2026-09-05', 'doc057', 'pat057'),
+('pre067', '2026-09-10', 'doc058', 'pat058'),
+('pre068', '2026-09-15', 'doc059', 'pat059'),
+('pre069', '2026-09-20', 'doc060', 'pat060'),
+('pre070', '2026-09-25', 'doc061', 'pat061');
+
+
+INSERT INTO Contains (drug_id, chemical_id) VALUES 
+('dr021', 'ch021'),
+('dr022', 'ch022'),
+('dr023', 'ch023'),
+('dr024', 'ch024'),
+('dr025', 'ch025'),
+('dr026', 'ch026'),
+('dr027', 'ch027'),
+('dr028', 'ch028'),
+('dr029', 'ch029'),
+('dr030', 'ch030'),
+('dr031', 'ch031'),
+('dr032', 'ch032'),
+('dr033', 'ch033'),
+('dr034', 'ch034'),
+('dr035', 'ch035'),
+('dr036', 'ch036'),
+('dr037', 'ch037'),
+('dr038', 'ch038'),
+('dr039', 'ch039'),
+('dr040', 'ch040'),
+('dr041', 'ch041'),
+('dr042', 'ch042'),
+('dr043', 'ch043'),
+('dr044', 'ch044'),
+('dr045', 'ch045'),
+('dr046', 'ch046'),
+('dr047', 'ch047'),
+('dr048', 'ch048'),
+('dr049', 'ch049'),
+('dr050', 'ch050'),
+('dr051', 'ch051'),
+('dr052', 'ch052'),
+('dr053', 'ch053'),
+('dr054', 'ch054'),
+('dr055', 'ch055'),
+('dr056', 'ch056'),
+('dr057', 'ch057'),
+('dr058', 'ch058'),
+('dr059', 'ch059'),
+('dr060', 'ch060'),
+('dr061', 'ch061'),
+('dr062', 'ch062'),
+('dr063', 'ch063'),
+('dr064', 'ch064'),
+('dr065', 'ch065'),
+('dr066', 'ch066'),
+('dr067', 'ch067'),
+('dr068', 'ch068'),
+('dr069', 'ch069'),
+('dr070', 'ch070');
+
+INSERT INTO Manufactures (manufacturer_id, drug_id, dosage) VALUES 
+('m021', 'dr021', '500mg'),
+('m022', 'dr022', '250mg'),
+('m023', 'dr023', '25mg'),
+('m024', 'dr024', '300mg'),
+('m025', 'dr025', '50mg'),
+('m026', 'dr026', '12.5mg'),
+('m027', 'dr027', '10mg'),
+('m028', 'dr028', '40mg'),
+('m029', 'dr029', '20mg'),
+('m030', 'dr030', '50mcg'),
+('m031', 'dr031', '10mg'),
+('m032', 'dr032', '5mg'),
+('m033', 'dr033', '30mg'),
+('m034', 'dr034', '4mg'),
+('m035', 'dr035', '75mg'),
+('m036', 'dr036', '10mg'),
+('m037', 'dr037', '150mg'),
+('m038', 'dr038', '25mg'),
+('m039', 'dr039', '500mg'),
+('m040', 'dr040', '5mg'),
+('m041', 'dr041', '25mg'),
+('m042', 'dr042', '6.25mg'),
+('m043', 'dr043', '0.4mg'),
+('m044', 'dr044', '20mg'),
+('m045', 'dr045', '0.25mg'),
+('m046', 'dr046', '150mg'),
+('m047', 'dr047', '220mg'),
+('m048', 'dr048', '10mg'),
+('m049', 'dr049', '100mg'),
+('m050', 'dr050', '5mg'),
+('m051', 'dr051', '500mg'),
+('m052', 'dr052', '100mg'),
+('m053', 'dr053', '15mg'),
+('m054', 'dr054', '15mg'),
+('m055', 'dr055', '100mg'),
+('m056', 'dr056', '80mg'),
+('m057', 'dr057', '10mg'),
+('m058', 'dr058', '10mg'),
+('m059', 'dr059', '25mg'),
+('m060', 'dr060', '25mg'),
+('m061', 'dr061', '5mg'),
+('m062', 'dr062', '1mg'),
+('m063', 'dr063', '50mg'),
+('m064', 'dr064', '4mg'),
+('m065', 'dr065', '150mg'),
+('m066', 'dr066', '100k unit'),
+('m067', 'dr067', '75mg'),
+('m068', 'dr068', '500mg'),
+('m069', 'dr069', '400mg'),
+('m070', 'dr070', '25mg');
+
+INSERT INTO Has (drug_id, prescription_id) VALUES 
+('dr021', 'pre021'),
+('dr022', 'pre022'),
+('dr023', 'pre023'),
+('dr024', 'pre024'),
+('dr025', 'pre025'),
+('dr026', 'pre026'),
+('dr027', 'pre027'),
+('dr028', 'pre028'),
+('dr029', 'pre029'),
+('dr030', 'pre030'),
+('dr031', 'pre031'),
+('dr032', 'pre032'),
+('dr033', 'pre033'),
+('dr034', 'pre034'),
+('dr035', 'pre035'),
+('dr036', 'pre036'),
+('dr037', 'pre037'),
+('dr038', 'pre038'),
+('dr039', 'pre039'),
+('dr040', 'pre040'),
+('dr041', 'pre041'),
+('dr042', 'pre042'),
+('dr043', 'pre043'),
+('dr044', 'pre044'),
+('dr045', 'pre045'),
+('dr046', 'pre046'),
+('dr047', 'pre047'),
+('dr048', 'pre048'),
+('dr049', 'pre049'),
+('dr050', 'pre050'),
+('dr051', 'pre051'),
+('dr052', 'pre052'),
+('dr053', 'pre053'),
+('dr054', 'pre054'),
+('dr055', 'pre055'),
+('dr056', 'pre056'),
+('dr057', 'pre057'),
+('dr058', 'pre058'),
+('dr059', 'pre059'),
+('dr060', 'pre060'),
+('dr061', 'pre061'),
+('dr062', 'pre062'),
+('dr063', 'pre063'),
+('dr064', 'pre064'),
+('dr065', 'pre065'),
+('dr066', 'pre066'),
+('dr067', 'pre067'),
+('dr068', 'pre068'),
+('dr069', 'pre069'),
+('dr070', 'pre070');
+
+INSERT INTO Feedback (feedback_no, prescription_id, comments) VALUES 
+('f016', 'pre016', 'Significant reduction in inflammation observed.'),
+('f017', 'pre017', 'Patient reports mild stomach upset after dinner dose.'),
+('f018', 'pre018', 'Blood pressure is now within the normal range.'),
+('f019', 'pre019', 'Cholesterol levels showing downward trend.'),
+('f020', 'pre020', 'No adverse effects; patient feels energetic.'),
+('f021', 'pre021', 'Fever subsided within 48 hours of starting treatment.'),
+('f022', 'pre022', 'Cough has decreased, but throat remains slightly dry.'),
+('f023', 'pre023', 'Heart rate stabilized; patient monitoring daily.'),
+('f024', 'pre024', 'Neuropathic pain is significantly more manageable.'),
+('f025', 'pre025', 'Blood pressure controlled; no leg swelling reported.'),
+('f026', 'pre026', 'Fluid retention has cleared up; weight is stable.'),
+('f027', 'pre027', 'Asthma symptoms triggered less frequently.'),
+('f028', 'pre028', 'Acid reflux symptoms have ceased entirely.'),
+('f029', 'pre029', 'Excellent response to diuretic; monitoring electrolytes.'),
+('f030', 'pre030', 'Patient reports better sleep quality and less congestion.'),
+('f031', 'pre031', 'Statin therapy well-tolerated; no muscle pain.'),
+('f032', 'pre032', 'Mood has improved; patient feels more motivated.'),
+('f033', 'pre033', 'Chronic pain levels dropped from 8/10 to 3/10.'),
+('f034', 'pre034', 'Inflammation in joints noticeably reduced.'),
+('f035', 'pre035', 'Anxiety levels are down; patient is sleeping better.'),
+('f036', 'pre036', 'Sleep onset is faster; no morning grogginess.'),
+('f037', 'pre037', 'Heartburn issues resolved; patient following diet.'),
+('f038', 'pre038', 'Pulse rate is steady; patient feels less fatigued.'),
+('f039', 'pre039', 'Infection cleared; final blood work looks good.'),
+('f040', 'pre040', 'Blood sugar levels are now consistently stable.'),
+('f041', 'pre041', 'No further potassium loss noted in tests.'),
+('f042', 'pre042', 'Cardiac output appears stable; follow-up in 2 weeks.'),
+('f043', 'pre043', 'Urinary symptoms have improved; patient comfortable.'),
+('f044', 'pre044', 'Consistent improvement in depressive symptoms.'),
+('f045', 'pre045', 'Digoxin levels are within therapeutic range.'),
+('f046', 'pre046', 'Patient feels more focused and less restless.'),
+('f047', 'pre047', 'Pain relief is sustained throughout the day.'),
+('f048', 'pre048', 'Muscle spasms have decreased in frequency.'),
+('f049', 'pre049', 'Uric acid levels normalized; no new gout flares.'),
+('f050', 'pre050', 'Patient is tapering off steroids; no rebound pain.'),
+('f051', 'pre051', 'Secondary infection prevented; recovery is complete.'),
+('f052', 'pre052', 'Skin infection resolved; no scarring noted.'),
+('f053', 'pre053', 'Gastric lining protection effective; no pain.'),
+('f054', 'pre054', 'HbA1c levels showing marked improvement.'),
+('f055', 'pre055', 'Glucose control is optimal with current dosage.'),
+('f056', 'pre056', 'Blood pressure goals achieved; maintaining dose.'),
+('f057', 'pre057', 'Plaque buildup slowing down; patient compliant.'),
+('f058', 'pre058', 'Spasms are rare now; physical therapy helping.'),
+('f059', 'pre059', 'Seizure activity has not recurred since start.'),
+('f060', 'pre060', 'Psychotic symptoms have receded; patient stable.'),
+('f061', 'pre061', 'Memory and cognitive function seem slightly sharper.'),
+('f062', 'pre062', 'Social interaction has improved; behavior is calm.'),
+('f063', 'pre063', 'Migraine frequency has dropped to zero this month.'),
+('f064', 'pre064', 'Nausea during chemo sessions is well-managed.'),
+('f065', 'pre065', 'Topical application has cleared the fungal patch.'),
+('f066', 'pre066', 'Oral thrush has cleared up; appetite is back.'),
+('f067', 'pre067', 'Flu symptoms lasted only 3 days; full recovery.'),
+('f068', 'pre068', 'Viral load is decreasing; no side effects.'),
+('f069', 'pre069', 'Outbreak healed completely; no new lesions.'),
+('f070', 'pre070', 'Resistant hypertension finally under control.');
+
+
+DELIMITER //
+CREATE TRIGGER check_drug_conflict
+BEFORE INSERT ON Has
+FOR EACH ROW
+BEGIN
+    DECLARE p_id VARCHAR(50);
+    DECLARE s_id VARCHAR(50);
+    DECLARE last_prescribed DATE;
+    DECLARE conflict_severity VARCHAR(20);
+    DECLARE conflict_drug_name VARCHAR(100);
+    DECLARE error_msg VARCHAR(255);
+
+    SET p_id = (SELECT patient_id FROM Prescription WHERE prescription_id = NEW.prescription_id);
+    SET s_id = (SELECT super_drug_id FROM Drugs WHERE drug_id = NEW.drug_id);
+
+    SELECT MAX(p.start_date) INTO last_prescribed
+    FROM Has h
+    JOIN Prescription p ON h.prescription_id = p.prescription_id
+    WHERE p.patient_id = p_id AND h.drug_id = NEW.drug_id;
+
+    IF last_prescribed IS NOT NULL THEN
+        IF DATEDIFF(CURDATE(), last_prescribed) < 7 THEN
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'DUPLICATE: This drug was prescribed less than 7 days ago!';
+        END IF;
+    END IF;
+
+    IF s_id IS NOT NULL THEN
+        SELECT d.drug_name, d.severity INTO conflict_drug_name, conflict_severity
+        FROM Has h
+        JOIN Prescription pr ON h.prescription_id = pr.prescription_id
+        JOIN Drugs d ON h.drug_id = d.drug_id
+        WHERE pr.patient_id = p_id
+        AND h.drug_id != NEW.drug_id
+        AND (d.drug_id = s_id OR d.super_drug_id = s_id)
+        LIMIT 1;
+    ELSE
+        SELECT d.drug_name, d.severity INTO conflict_drug_name, conflict_severity
+        FROM Has h
+        JOIN Prescription pr ON h.prescription_id = pr.prescription_id
+        JOIN Drugs d ON h.drug_id = d.drug_id
+        WHERE pr.patient_id = p_id
+        AND h.drug_id != NEW.drug_id
+        AND d.super_drug_id = NEW.drug_id
+        LIMIT 1;
+    END IF;
+
+    IF conflict_drug_name IS NOT NULL THEN
+        SET error_msg = CONCAT(
+            'CONFLICT: Already taking ', 
+            conflict_drug_name, 
+            ' (Severity: ', 
+            IFNULL(conflict_severity, 'Unknown'), 
+            ') from the same drug family!'
+        );
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = error_msg;
+    END IF;
+
+END //
+DELIMITER ;
+DROP TRIGGER IF EXISTS check_drug_conflict;
+UPDATE Drugs SET severity = NULL WHERE drug_id = 'dr001';
+ALTER TABLE Prescription ADD COLUMN end_date DATE;
+select * from prescription;
+
+UPDATE Prescription SET end_date = '2026-01-24' WHERE prescription_id = 'pre001';
+UPDATE Prescription SET end_date = '2026-01-26' WHERE prescription_id = 'pre002';
+UPDATE Prescription SET end_date = '2026-01-29' WHERE prescription_id = 'pre003';
+UPDATE Prescription SET end_date = '2026-02-01' WHERE prescription_id = 'pre004';
+UPDATE Prescription SET end_date = '2026-02-03' WHERE prescription_id = 'pre005';
+UPDATE Prescription SET end_date = '2026-02-05' WHERE prescription_id = 'pre006';
+UPDATE Prescription SET end_date = '2026-02-08' WHERE prescription_id = 'pre007';
+UPDATE Prescription SET end_date = '2026-02-11' WHERE prescription_id = 'pre008';
+UPDATE Prescription SET end_date = '2026-02-15' WHERE prescription_id = 'pre009';
+UPDATE Prescription SET end_date = '2026-02-19' WHERE prescription_id = 'pre010';
+UPDATE Prescription SET end_date = '2026-03-09' WHERE prescription_id = 'pre011';
+UPDATE Prescription SET end_date = '2026-02-23' WHERE prescription_id = 'pre019';
+UPDATE Prescription SET end_date = '2026-01-21' WHERE prescription_id = 'pre020';
+
+UPDATE Prescription SET end_date = '2026-04-26' WHERE prescription_id = 'pre012';
+UPDATE Prescription SET end_date = '2026-05-29' WHERE prescription_id = 'pre013';
+UPDATE Prescription SET end_date = '2026-07-11' WHERE prescription_id = 'pre014';
+UPDATE Prescription SET end_date = '2026-08-03' WHERE prescription_id = 'pre015';
+UPDATE Prescription SET end_date = '2026-07-21' WHERE prescription_id = 'pre016';
+UPDATE Prescription SET end_date = '2026-05-10' WHERE prescription_id = 'pre017';
+UPDATE Prescription SET end_date = '2026-04-08' WHERE prescription_id = 'pre018';
+UPDATE Prescription SET end_date = '2026-03-25' WHERE prescription_id = 'pre021';
+UPDATE Prescription SET end_date = '2026-03-28' WHERE prescription_id = 'pre022';
+UPDATE Prescription SET end_date = '2026-03-27' WHERE prescription_id = 'pre023';
+UPDATE Prescription SET end_date = '2026-03-25' WHERE prescription_id = 'pre024';
+UPDATE Prescription SET end_date = '2026-03-29' WHERE prescription_id = 'pre025';
+UPDATE Prescription SET end_date = '2026-04-02' WHERE prescription_id = 'pre026';
+UPDATE Prescription SET end_date = '2026-04-07' WHERE prescription_id = 'pre027';
+UPDATE Prescription SET end_date = '2026-04-09' WHERE prescription_id = 'pre028';
+UPDATE Prescription SET end_date = '2026-04-12' WHERE prescription_id = 'pre029';
+UPDATE Prescription SET end_date = '2026-04-17' WHERE prescription_id = 'pre030';
+UPDATE Prescription SET end_date = '2026-04-19' WHERE prescription_id = 'pre031';
+UPDATE Prescription SET end_date = '2026-04-22' WHERE prescription_id = 'pre032';
+UPDATE Prescription SET end_date = '2026-04-29' WHERE prescription_id = 'pre033';
+UPDATE Prescription SET end_date = '2026-05-03' WHERE prescription_id = 'pre034';
+UPDATE Prescription SET end_date = '2026-05-06' WHERE prescription_id = 'pre035';
+UPDATE Prescription SET end_date = '2026-05-08' WHERE prescription_id = 'pre036';
+UPDATE Prescription SET end_date = '2026-05-13' WHERE prescription_id = 'pre037';
+UPDATE Prescription SET end_date = '2026-05-16' WHERE prescription_id = 'pre038';
+UPDATE Prescription SET end_date = '2026-05-18' WHERE prescription_id = 'pre039';
+UPDATE Prescription SET end_date = '2026-05-23' WHERE prescription_id = 'pre040';
+UPDATE Prescription SET end_date = '2026-05-29' WHERE prescription_id = 'pre041';
+UPDATE Prescription SET end_date = '2026-06-02' WHERE prescription_id = 'pre042';
+UPDATE Prescription SET end_date = '2026-06-07' WHERE prescription_id = 'pre043';
+UPDATE Prescription SET end_date = '2026-06-12' WHERE prescription_id = 'pre044';
+UPDATE Prescription SET end_date = '2026-06-17' WHERE prescription_id = 'pre045';
+UPDATE Prescription SET end_date = '2026-06-22' WHERE prescription_id = 'pre046';
+UPDATE Prescription SET end_date = '2026-06-29' WHERE prescription_id = 'pre047';
+UPDATE Prescription SET end_date = '2026-07-03' WHERE prescription_id = 'pre048';
+UPDATE Prescription SET end_date = '2026-07-08' WHERE prescription_id = 'pre049';
+UPDATE Prescription SET end_date = '2026-07-13' WHERE prescription_id = 'pre050';
+UPDATE Prescription SET end_date = '2026-07-18' WHERE prescription_id = 'pre051';
+UPDATE Prescription SET end_date = '2026-07-23' WHERE prescription_id = 'pre052';
+UPDATE Prescription SET end_date = '2026-07-29' WHERE prescription_id = 'pre053';
+UPDATE Prescription SET end_date = '2026-08-02' WHERE prescription_id = 'pre054';
+UPDATE Prescription SET end_date = '2026-08-07' WHERE prescription_id = 'pre055';
+UPDATE Prescription SET end_date = '2026-08-12' WHERE prescription_id = 'pre056';
+UPDATE Prescription SET end_date = '2026-08-17' WHERE prescription_id = 'pre057';
+UPDATE Prescription SET end_date = '2026-08-22' WHERE prescription_id = 'pre058';
+UPDATE Prescription SET end_date = '2026-08-29' WHERE prescription_id = 'pre059';
+UPDATE Prescription SET end_date = '2026-09-02' WHERE prescription_id = 'pre060';
+UPDATE Prescription SET end_date = '2026-09-07' WHERE prescription_id = 'pre061';
+UPDATE Prescription SET end_date = '2026-09-12' WHERE prescription_id = 'pre062';
+UPDATE Prescription SET end_date = '2026-09-17' WHERE prescription_id = 'pre063'; 
+UPDATE Prescription SET end_date = '2026-09-22' WHERE prescription_id = 'pre064';
+UPDATE Prescription SET end_date = '2026-09-29' WHERE prescription_id = 'pre065';
+UPDATE Prescription SET end_date = '2026-10-03' WHERE prescription_id = 'pre066';
+UPDATE Prescription SET end_date = '2026-10-08' WHERE prescription_id = 'pre067';
+UPDATE Prescription SET end_date = '2026-10-13' WHERE prescription_id = 'pre068';
+UPDATE Prescription SET end_date = '2026-10-18' WHERE prescription_id = 'pre069';
+UPDATE Prescription SET end_date = '2026-10-23' WHERE prescription_id = 'pre070';
+UPDATE Prescription SET end_date = '2026-04-18' WHERE prescription_id = 'pre071';
+
+
+DELIMITER //
+CREATE TRIGGER check_drug_conflict
+BEFORE INSERT ON Has
+FOR EACH ROW
+BEGIN
+    DECLARE p_id VARCHAR(50);
+    DECLARE s_id VARCHAR(50);
+    DECLARE active_duplicate INT DEFAULT 0;
+    DECLARE conflict_severity VARCHAR(20);
+    DECLARE conflict_drug_name VARCHAR(100);
+    DECLARE error_msg VARCHAR(255);
+
+    SET p_id = (SELECT patient_id FROM Prescription WHERE prescription_id = NEW.prescription_id);
+    SET s_id = (SELECT super_drug_id FROM Drugs WHERE drug_id = NEW.drug_id);
+
+    SELECT COUNT(*) INTO active_duplicate
+    FROM Has h
+    JOIN Prescription p ON h.prescription_id = p.prescription_id
+    WHERE p.patient_id = p_id
+    AND h.drug_id = NEW.drug_id
+    AND (p.end_date IS NULL OR p.end_date >= CURDATE());
+
+    IF active_duplicate > 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'DUPLICATE: This drug is already actively prescribed to this patient!';
+    END IF;
+    IF s_id IS NOT NULL THEN
+        SELECT d.drug_name, d.severity INTO conflict_drug_name, conflict_severity
+        FROM Has h
+        JOIN Prescription pr ON h.prescription_id = pr.prescription_id
+        JOIN Drugs d ON h.drug_id = d.drug_id
+        WHERE pr.patient_id = p_id
+        AND h.drug_id != NEW.drug_id
+        AND (d.drug_id = s_id OR d.super_drug_id = s_id)
+        AND (pr.end_date IS NULL OR pr.end_date >= CURDATE())
+        LIMIT 1;
+    ELSE
+        SELECT d.drug_name, d.severity INTO conflict_drug_name, conflict_severity
+        FROM Has h
+        JOIN Prescription pr ON h.prescription_id = pr.prescription_id
+        JOIN Drugs d ON h.drug_id = d.drug_id
+        WHERE pr.patient_id = p_id
+        AND h.drug_id != NEW.drug_id
+        AND d.super_drug_id = NEW.drug_id
+        AND (pr.end_date IS NULL OR pr.end_date >= CURDATE())
+        LIMIT 1;
+    END IF;
+
+    IF conflict_drug_name IS NOT NULL THEN
+        SET error_msg = CONCAT(
+            'CONFLICT: Already actively taking ',
+            conflict_drug_name,
+            ' (Severity: ',
+            IFNULL(conflict_severity, 'Unknown'),
+            ') from the same drug family!'
+        );
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = error_msg;
+    END IF;
+
+END //
+DELIMITER ;
+
+DESCRIBE Prescription;
+select * from feedback;
+select * from has;
+select* from doctor;
+select * from patient;
+
+INSERT INTO Has (drug_id, prescription_id) VALUES ('dr006', 'pre006');
+
+ALTER TABLE Feedback ADD COLUMN last_updated DATE;
+
+select * from Feedback;
+
+DELIMITER //
+CREATE TRIGGER set_feedback_insert_date
+BEFORE INSERT ON Feedback
+FOR EACH ROW
+BEGIN
+    SET NEW.last_updated = CURDATE();
+END //
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE TRIGGER check_feedback_update
+BEFORE UPDATE ON Feedback
+FOR EACH ROW
+BEGIN
+    IF OLD.last_updated = CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'FEEDBACK: You can only edit your feedback once per day!';
+    END IF;
+    SET NEW.last_updated = CURDATE();
+END //
+DELIMITER ;
+SHOW TRIGGERS;
+
+
+
+-- TASK4 15 QUERIES WITH VARYING COMPLEXITY
+
+-- 1. doctors having phone numbers having greater than 1 phone number
+select Doctor.doctor_id,count(Doc_Phone_no.phone_no) as x
+from Doctor Join Doc_Phone_no on Doctor.doctor_id=Doc_Phone_no.doctor_id
+Group by(Doctor.doctor_id)
+Having x>1;
+
+-- 2. Drug id of drugs whose super drug doesn't exist that is they are primary drugs
+select Drugs.drug_id
+from Drugs
+where Drugs.super_drug_id is NULL;
+
+-- 3. The distinct name of the patients who haven't been prescribed for more than 10 days
+select distinct Patient.name 
+from Patient join Prescription on Patient.patient_id=Prescription.patient_id
+where CURDATE()>DATE_ADD(start_date,INTERVAL 10 DAY);
+
+
+-- 4.Patient id of patients whose blood group is O+
+select Patient.patient_id
+from Patient
+where Patient.blood_group = 'O+';
+
+-- 5. Drug name and severity of all High severity drugs
+select Drugs.drug_name, Drugs.severity
+from Drugs
+where Drugs.severity = 'High';
+
+-- 6. Prescription id of all active prescriptions that have not yet ended
+select Prescription.prescription_id
+from Prescription
+where Prescription.end_date >= CURDATE();
+
+-- 7. All Cardiologists
+select Doctor.name
+from Doctor
+where Doctor.specialisation = 'Cardiologist';
+
+-- 8. the distinct name of patients who have been prescribed a drug of high severity
+select distinct Patient.name
+from Patient join Prescription on Patient.patient_id = Prescription.patient_id
+join Has on Prescription.prescription_id = Has.prescription_id
+join Drugs on Has.drug_id = Drugs.drug_id
+where Drugs.severity = 'High';
+
+-- 9. The name of patients along with the drug they were prescribed and the doctor who prescribed it
+select Patient.name as patient_name, Drugs.drug_name, Doctor.name as doctor_name
+from Patient join Prescription on Patient.patient_id = Prescription.patient_id
+join Has on Prescription.prescription_id = Has.prescription_id
+join Drugs on Has.drug_id = Drugs.drug_id
+join Doctor on Prescription.doctor_id = Doctor.doctor_id;
+
+-- 10. Drugs that haven't been prescribed yet
+select Drugs.drug_name
+from Drugs left join Has on Drugs.drug_id = Has.drug_id
+where Has.drug_id is NULL;
+
+
+-- 11. The name of patients who have given feedback along with their prescription id and comments
+select distinct Patient.name, Feedback.prescription_id, Feedback.comments
+from Patient join Prescription on Patient.patient_id = Prescription.patient_id
+join Feedback on Prescription.prescription_id = Feedback.prescription_id
+where Feedback.comments is not NULL;
+
+-- 12. Manufacturers having more than 1 phone number along with the count of their phone numbers
+select Manufacturer.manufacturer_id,count(Manufacturer_Phone_no.phone_no) as phone_count
+from Manufacturer join Manufacturer_Phone_no on Manufacturer.manufacturer_id = Manufacturer_Phone_no.manufacturer_id
+group by(Manufacturer.manufacturer_id)
+having phone_count>1;
+
+-- 13. The name of patients who have been prescribed more than 1 drug across all their prescriptions
+select Patient.name,count(Has.drug_id) as total_drugs
+from Patient join Prescription on Patient.patient_id = Prescription.patient_id
+join Has on Prescription.prescription_id = Has.prescription_id
+group by(Patient.patient_id, Patient.name)
+having total_drugs>1;
+
+-- 14. The specialisation and the total number of active prescriptions issued by doctors of each specialisation
+select Doctor.specialisation,count(Prescription.prescription_id) as active_prescriptions
+from Doctor join Prescription on Doctor.doctor_id = Prescription.doctor_id
+where Prescription.end_date =CURDATE() or Prescription.end_date is NULL
+group by(Doctor.specialisation)
+order by active_prescriptions desc;
+
+-- 15. Name of patients who have more than one active prescription currently
+select distinct Patient.name,count(Prescription.prescription_id) as active_prescriptions
+from Patient join Prescription on Patient.patient_id = Prescription.patient_id
+where Prescription.end_date>=CURDATE() or Prescription.end_date is NULL
+group by(Patient.patient_id,Patient.name)
+having active_prescriptions>1;
+
